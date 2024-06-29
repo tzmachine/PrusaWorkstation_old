@@ -30,7 +30,7 @@ while True:
                 # wenn M118 mit dieser Nachricht während des Druckes kommt, so bleibt der Lüfter eingeschaltet,
                 # da printing == True, zudem wartet der RPi nach dem Befehl 3min
                 if printing == False :
-                    time.sleep(60)
+                    time.sleep(120)
                     GPIO.output(12, GPIO.HIGH)
                     printing = True
                 else: 
