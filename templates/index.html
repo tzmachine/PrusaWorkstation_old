@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GPIO Control</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #1c1e21; /* Hintergrundfarbe ändern */
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .banner {
+            width: 100%;
+            background-color: #2a2a2a; /* Dunklerer Banner */
+            color: #fff;
+            text-align: center;
+            padding: 20px 0;
+        }
+        .container {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .button {
+            display: inline-block;
+            padding: 15px 25px;
+            font-size: 24px;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+            outline: none;
+            color: #fff;
+            background-color: #4e4e4e;
+            border: none;
+            border-radius: 15px;
+            transition: background-color 0.3s;
+            margin: 10px;
+        }
+        .button:hover {
+            background-color: #343a40;
+        }
+        .button:active {
+            background-color: #9a9a9a;
+            transform: translateY(4px);
+        }
+        .on {
+            background-color: #fa6831 !important;
+        }
+        .temperature {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: white;
+        }
+        .fan-control {
+            margin-top: 20px;
+        }
+    </style>
+    <script>
+        function toggleButton(pin) {
+            fetch(`/toggle/${pin}`, {method: 'POST'})
+                .then(response => response.json())
+                .then(data => {
+                    const button = document.getElementById(`button-${pin}`);
+                    if (data.state) {
+                        button.classList.add('on');
+                    } else {
+                        button.classList.remove('on');
+                    }
+                });
+        }
+
+        function toggleAutoMode() {
+            fetch('/toggle_auto_mode', {method: 'POST'})
+                .then(response => response.json())
+                .then(data => {
+                    const button = document.getElementById('auto-mode-button');
+                    console.log(`Auto mode enabled: ${data.auto_mode_enabled}`);
+                    if (data.auto_mode_enabled) {
+                        button.classList.add('on');
+                    } else {
+                        button.classList.remove('on');
+                    }
+                });
+        }
+
+        function getTemperature() {
+            fetch('/temperature')
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById('temperature').textContent = `Current Temperature: ${data} °C`;
+                });
+        }
+
+        // Initialisierung der Seite
+        document.addEventListener('DOMContentLoaded', function() {
+            // Starte die Aktualisierung der Temperatur alle 10 Sekunden
+            setInterval(getTemperature, 5000);
+
+            // Hole die Temperatur beim Laden der Seite
+            getTemperature();
+
+        });
+    </script>
+</head>
+<body>
+    <div class="banner">
+        <h1>Prusa Workstation Control</h1>
+    </div>
+    <div class="container">
+        <div id="temperature" class="temperature">Current Temperature: - °C</div>
+        <div>
+            <button id="button-6" class="button" onclick="toggleButton(6)">Licht ein/aus</button>
+            <button id="button-12" class="button" onclick="toggleButton(12)">Filter ein/aus</button>
+            <button id="button-5" class="button" onclick="toggleButton(5)">GPIO 5</button>
+            <button id="button-0" class="button" onclick="toggleButton(0)">GPIO 0</button>
+        </div>
+        <div class="fan-control">
+            <button id="auto-mode-button" class="button" onclick="toggleAutoMode()">Auto Belüftung ein/aus</button>
+        </div>
+    </div>
+</body>
+</html>
