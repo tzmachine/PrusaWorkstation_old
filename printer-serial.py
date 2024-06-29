@@ -6,9 +6,9 @@ GPIO.setmode(GPIO.BCM)
 GPIO.setup(12, GPIO.OUT)
 
 
-def connect_to_printer(port='/dev/ttyACM0', baudrate=115200, timeout=2):
+def connect_to_printer(port='/dev/ttyACM0', baudrate=115200, bytesize=serial.EIGHTBITS, timeout=2):
     try:
-        ser = serial.Serial(port, baudrate, timeout)
+        ser = serial.Serial(port, baudrate, bytesize, timeout)
         print(f"Connected to {port} at {baudrate} baudrate")
         return ser
     except serial.SerialException as e:
