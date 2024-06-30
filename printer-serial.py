@@ -6,7 +6,7 @@ GPIO.setmode(GPIO.BCM)
 GPIO.setup(12, GPIO.OUT)
 
 
-def connect_to_printer(port='/dev/ttyACM0', baudrate=115200):
+def connect_to_printer(port='/dev/prusamk39', baudrate=115200):
     try:
         ser = serial.Serial(port, baudrate)
         print(f"Connected to {port} at {baudrate} baudrate")
